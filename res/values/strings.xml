@@ -4,5 +4,6 @@
     <string name="app_name">musica</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="Welcome">Welcome</string>
 
 </resources>
