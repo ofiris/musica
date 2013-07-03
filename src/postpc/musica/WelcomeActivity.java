@@ -32,7 +32,6 @@ public class WelcomeActivity extends Activity {
 		mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
 		mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
 		mChannel = mManager.initialize(this, getMainLooper(), null);
-		mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel, this);
 		
 	}
 
@@ -42,5 +41,20 @@ public class WelcomeActivity extends Activity {
 		getMenuInflater().inflate(R.menu.welcome, menu);
 		return true;
 	}
+	
+	/* register the broadcast receiver with the intent values to be matched */
+	@Override
+	protected void onResume() {
+		super.onResume();
+		mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel, this);
+		registerReceiver(mReceiver, mIntentFilter);
+	}
 
+	/* unregister the broadcast receiver */
+	@Override
+	protected void onPause() {
+		super.onPause();
+		unregisterReceiver(mReceiver);
+	}
+	
 }
