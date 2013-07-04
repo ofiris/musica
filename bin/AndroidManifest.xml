@@ -7,12 +7,15 @@
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="17" />
-	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
+        android:name=".CommunicationBinder"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -34,6 +37,15 @@
             android:name="postpc.musica.SearchActivity"
             android:label="@string/title_activity_search" >
         </activity>
+        <activity
+            android:name="postpc.musica.Master_Play_Activity"
+            android:label="@string/title_activity_master" >
+        </activity>
+        <activity
+            android:name="postpc.musica.SlavePlayActivity"
+            android:label="@string/title_activity_slave_play" >
+        </activity>
+        <service android:name="MusicService"  android:enabled="true"></service>
     </application>
 
 </manifest>
