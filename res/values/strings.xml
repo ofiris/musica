@@ -14,6 +14,11 @@
     <string name="next">next</string>
     <string name="back">back</string>
     <string name="prev">prev</string>
-    <string name="empty"></string>
+    <string name="title_activity_master">MasterActivity</string>
+    <string name="play">Play!</string>
+    <string name="empty">" "</string>
+    <string name="sender">sender</string>
+    <string name="title_activity_slave_play">SlavePlayActivity</string>
+    <string name="waitForStart">waiting For Start</string>
 
 </resources>
