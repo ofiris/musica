@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -92,6 +93,22 @@ public class SearchActivity extends Activity {
 				new getSearchList(listAdapter).execute(fullQuerry);
 			}
 		});
+		
+		Button backButton = (Button) findViewById(R.id.back);
+		final Context mActivity = this;
+		backButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				for (PrintWriter pw: connections.values()){
+					pw.println("go to next intent");
+					pw.flush();
+				}
+				
+				Intent intent = new Intent(mActivity, Master_Play_Activity.class);
+				intent.putExtra("song","some song"); //TODO
+				mActivity.startActivity(intent);
+			}
+		});
 
 	}
 
@@ -107,7 +124,9 @@ public class SearchActivity extends Activity {
 	
 	private void createCommunication(Bundle b) {
 		info = getIntent().getParcelableExtra("info");
-		connections = new HashMap<Socket, PrintWriter>();
+		CommunicationBinder myCom = (CommunicationBinder) getApplication();
+		myCom.connections = new HashMap<Socket, PrintWriter>();
+		connections = myCom.connections;
 		Toast.makeText(this, "I am group owner", Toast.LENGTH_LONG).show();
 		Void [] params = new Void [1];
 		new CreateCommunicationGroupOwner(this, null).execute(params);

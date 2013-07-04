@@ -6,8 +6,11 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -28,8 +31,10 @@ public class WaitingActivity extends Activity {
 	//for client	
 	private Socket socket;
 	private BufferedReader reader;
-
+	
 	private WifiP2pInfo info;
+	
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +45,19 @@ public class WaitingActivity extends Activity {
 		Toast.makeText(this, "I am not the group owner", Toast.LENGTH_LONG).show();
 		new CreateCommunicationClient(this, layoutView).execute(host);
 		
+		
 	}
 
 	private void readFromUserClient() {
-		ColorChangerMessangerInClient in = new ColorChangerMessangerInClient(this, layoutView);
+		ReadFromMaster in = new ReadFromMaster(this, layoutView);
 		in.execute();
 
+	}
+	
+	private void goToPlayIntent(String receivedMsg) {
+		Intent intent = new Intent(this, SlavePlayActivity.class);
+		intent.putExtra("song","some song"); //TODO
+		this.startActivity(intent);
 	}
 
 
@@ -64,6 +76,9 @@ public class WaitingActivity extends Activity {
 				String host = params[0];
 				socket.connect((new InetSocketAddress(host, 8989)),0); //TODO fals here when was ysed and now master is not connected
 				reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				CommunicationBinder cb = (CommunicationBinder) getApplication();
+				cb.reader = reader;
+				cb.readerSocket = socket;
 				System.out.println("connection made");
 			} catch (IOException e) {
 
@@ -83,13 +98,13 @@ public class WaitingActivity extends Activity {
 
 	
 
-	public class ColorChangerMessangerInClient extends AsyncTask<Void, Void, String> {
+	public class ReadFromMaster extends AsyncTask<Void, Void, String> {
 
 		/**
 		 * @param context
 		 * @param statusText
 		 */
-		public ColorChangerMessangerInClient(Context context, View view) {
+		public ReadFromMaster(Context context, View view) {
 		}
 
 		@Override
@@ -108,8 +123,10 @@ public class WaitingActivity extends Activity {
 		@Override
 		protected void onPostExecute(String receivedMsg) {
 			System.out.println(receivedMsg);
-			readFromUserClient();
+			goToPlayIntent(receivedMsg);
 		}
+
+
 	}
 
 
