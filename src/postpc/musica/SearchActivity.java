@@ -1,6 +1,8 @@
 package postpc.musica;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
@@ -9,12 +11,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import postpc.musica.CommunicationBinder.ReaderWriterPair;
+
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.os.Parcelable;
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,26 +29,46 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-public class SearchActivity extends Activity {
+public class SearchActivity extends ParentActivity {
 
 	private  ListView youTubeList;
 	private ArrayAdapter<youTubeEntery> listAdapter;
 	private int curListPlace=1;
 	private String querry = "";
-	private HashMap<Socket, PrintWriter> connections;
-	private Parcelable info;
-	private ServerSocket serverSocket;
+	private boolean mIsBound = false;
+	private Master_Get_Connection mServ;
+	/*
+	 * Service Connection implementation for the activity to
+	 * use the binder, when the service is ready
+	 */
+	private ServiceConnection _scon = new ServiceConnection(){
+
+		public void onServiceConnected(ComponentName name, IBinder
+				binder) {
+			mServ = ((Master_Get_Connection.ServiceBinder)binder).getService();
+			mIsBound = true;
+			System.out.println("mServ = " + mServ);
+		}
+
+		public void onServiceDisconnected(ComponentName name) {
+			mServ = null;
+		}
+	};
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search);
-		createCommunication(savedInstanceState);
 		List<youTubeEntery> list = new ArrayList<youTubeEntery>();
 		youTubeList = (ListView)findViewById(R.id.youTubeList);     
-
+		
+		
+		
+		
+		mIsBound = true;
 		listAdapter = new listAdapt(this, list);
 		youTubeList.setAdapter(listAdapter);
 		registerForContextMenu(youTubeList);
@@ -99,16 +126,15 @@ public class SearchActivity extends Activity {
 		backButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				for (PrintWriter pw: connections.values()){
-					pw.println("go to next intent");
-					pw.flush();
-				}
-				
+				mServ.startedPlayMode();
 				Intent intent = new Intent(mActivity, Master_Play_Activity.class);
 				intent.putExtra("song","some song"); //TODO
 				mActivity.startActivity(intent);
+				
 			}
 		});
+		Intent intent = new Intent(this,Master_Get_Connection.class);
+		bindService(intent,_scon,Context.BIND_AUTO_CREATE);
 
 	}
 
@@ -121,74 +147,17 @@ public class SearchActivity extends Activity {
 		return true;
 	}
 	
-	
-	private void createCommunication(Bundle b) {
-		info = getIntent().getParcelableExtra("info");
-		CommunicationBinder myCom = (CommunicationBinder) getApplication();
-		myCom.connections = new HashMap<Socket, PrintWriter>();
-		connections = myCom.connections;
-		Toast.makeText(this, "I am group owner", Toast.LENGTH_LONG).show();
-		Void [] params = new Void [1];
-		new CreateCommunicationGroupOwner(this, null).execute(params);
-
-	}
-	
-	public class CreateCommunicationGroupOwner extends AsyncTask<Void, Void, String> {
+	protected void onDestroy()
+	{
+		super.onDestroy();
+		//Unbound with service, destroys service if no one else touched it
+		if(mIsBound)
+		{
 		
-		/**
-		 * @param context
-		 * @param statusText
-		 */
-		public CreateCommunicationGroupOwner(Context context, View statusText) {
-		}
-		@Override
-		protected String doInBackground(Void... params) {
-			try {
-				serverSocket = new ServerSocket(8989);
-				System.out.println("connection made");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return null;
-		}
-		@Override
-		protected void onPostExecute(String result) {
-			continueListening();
+			unbindService(_scon);
+			mIsBound = false;
 		}
 		
 	}
-	private void continueListening() {
-
-		new ContinueCommunicationGroupOwner(this, null).execute();
-
-	}
-	public class ContinueCommunicationGroupOwner extends AsyncTask<Void, Void, Socket> {
-		/**
-		 * @param context
-		 * @param statusText
-		 */
-
-		public ContinueCommunicationGroupOwner(Context context, View statusText) {
-		}
-		@Override
-		protected Socket doInBackground(Void... params) {
-			Socket socket = null;
-			try {
-				System.out.println("Going to listen to a new socket");
-				socket = serverSocket.accept();
-				PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-				connections.put(socket, writer);
-				System.out.println("connection made connections length is:" + connections.size());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return socket;
-		}
-		@Override
-		protected void onPostExecute(Socket socket) {
-			System.out.println("started post");
-			continueListening();
-			System.out.println("finshed post");
-		}
-	}
+	
 }

@@ -26,6 +26,7 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
 	private WelcomeActivity mActivity;
 	private DirectWifiPeersListener myPeerListListener;
 	private DirectWifiConnectionInfoListener myConnectionInfoListener;
+	private static boolean alreadyCreatedActivity;
 
 	int numberOfConnections;
 
@@ -37,6 +38,7 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
 		this.myPeerListListener = new DirectWifiPeersListener();
 		this.myConnectionInfoListener = new DirectWifiConnectionInfoListener();
 		this.numberOfConnections = 0;
+		this.alreadyCreatedActivity = false;
 	}
 
 	@Override
@@ -109,37 +111,51 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
 
 		@Override
 		public void onPeersAvailable(WifiP2pDeviceList peers) {
+			boolean foundOwner = false;
 			System.out.println("Found peers");
-			Toast.makeText(mActivity, "found peers", Toast.LENGTH_LONG).show();
+			//Toast.makeText(mActivity, "found peers", Toast.LENGTH_LONG).show();
 			for (WifiP2pDevice peer : peers.getDeviceList()){
+				if (!peer.isGroupOwner()) continue;
+				foundOwner = true;
 				WifiP2pConfig config = new WifiP2pConfig();
 				config.deviceAddress = peer.deviceAddress;
 				config.wps.setup = WpsInfo.PBC;
-				mManager.connect(mChannel, config, new ActionListener() {
-
-					@Override
-					public void onSuccess() {
-						System.out.println("succeeded in connection");
-					}
-
-					@Override
-					public void onFailure(int reason) {
-						System.out.println("failed in connection");
-					}
-				});
+				mManager.connect(mChannel, config, new ConnectionActionListener(config));
 			}
+				
+			
+			if (foundOwner) return;
+			System.out.println("creating group");
+			mManager.createGroup(mChannel, null);
+			
 		}
 
 
 	}
 
+	private class ConnectionActionListener implements ActionListener{
+		WifiP2pConfig config;
+		public ConnectionActionListener (WifiP2pConfig config){
+			this.config = config;
+		}
+		@Override
+		public void onSuccess() {
+			System.out.println("succeeded in connection");
+		}
 
-
+		@Override
+		public void onFailure(int reason) {
+			System.out.println("fail try again");
+			//mManager.connect(mChannel, config, new ConnectionActionListener(config));
+		}
+	}
+	
 	public class DirectWifiConnectionInfoListener implements ConnectionInfoListener{
 
 		@Override
 		public void onConnectionInfoAvailable(WifiP2pInfo info) {
 			System.out.println("In connection info available");
+			
 			if (info.groupFormed && info.isGroupOwner){
 				Intent intent = new Intent(mActivity, SearchActivity.class);
 				intent.putExtra("info",info);

@@ -67,4 +67,14 @@
         android:layout_alignRight="@+id/youTubeList"
         android:text="@string/next" />
 
+    <TextView
+        android:id="@+id/connection_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/youTubeList"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="14dp"
+        android:text="@string/NumOfStartedConnections"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
 </RelativeLayout>

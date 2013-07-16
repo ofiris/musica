@@ -25,12 +25,13 @@ import android.widget.Toast;
  */
 
 
-public class WaitingActivity extends Activity {
+public class WaitingActivity extends ParentActivity {
 	private View layoutView;
 
 	//for client	
 	private Socket socket;
 	private BufferedReader reader;
+	private PrintWriter writer;
 	
 	private WifiP2pInfo info;
 	
@@ -78,6 +79,7 @@ public class WaitingActivity extends Activity {
 				reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 				CommunicationBinder cb = (CommunicationBinder) getApplication();
 				cb.reader = reader;
+				cb.writer = new PrintWriter(socket.getOutputStream(),true);
 				cb.readerSocket = socket;
 				System.out.println("connection made");
 			} catch (IOException e) {
@@ -122,7 +124,7 @@ public class WaitingActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(String receivedMsg) {
-			System.out.println(receivedMsg);
+			//System.out.println(receivedMsg);
 			goToPlayIntent(receivedMsg);
 		}
 

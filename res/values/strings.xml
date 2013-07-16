@@ -20,5 +20,7 @@
     <string name="sender">sender</string>
     <string name="title_activity_slave_play">SlavePlayActivity</string>
     <string name="waitForStart">waiting For Start</string>
+    <string name="NumOfStartedConnections">0</string>
+    <string name="title_activity_parent">ParentActivity</string>
 
 </resources>

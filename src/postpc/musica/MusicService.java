@@ -2,6 +2,7 @@ package postpc.musica;
 
 import android.app.Service;
 import android.content.Intent;
+import android.media.AudioTrack;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
@@ -11,7 +12,8 @@ public class MusicService extends Service{
     private final IBinder mBinder = new ServiceBinder();
     MediaPlayer mPlayer;
     private int length = 0;
-
+    Intent intent;
+    int right,left;
     public MusicService() { }
 
     /*
@@ -34,15 +36,16 @@ public class MusicService extends Service{
      */
     public IBinder onBind(Intent arg0)
     {
+    	intent = arg0;
+    	right = intent.getIntExtra("right", 100);
+    	left  = intent.getIntExtra("left", 100);
     	return mBinder;
     }
 
     @Override
     public void onCreate (){
 	  super.onCreate();
-
       mPlayer = MediaPlayer.create(this, R.raw.m);
-
        if(mPlayer!= null)
         {
         	mPlayer.setLooping(true);
