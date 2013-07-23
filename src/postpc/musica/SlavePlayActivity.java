@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import postpc.musica.Master_Play_Activity.PlayTask;
+import postpc.musica.MasterPlayActivity.PlayTask;
 
 import android.os.AsyncTask;
 import android.os.Bundle;

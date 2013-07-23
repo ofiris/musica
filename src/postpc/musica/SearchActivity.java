@@ -38,7 +38,7 @@ public class SearchActivity extends ParentActivity {
 	private ArrayAdapter<youTubeEntery> listAdapter;
 	private int curListPlace=1;
 	private String querry = "";
-	private boolean mIsBound = false;
+	private boolean mIsBound = false; //TODO remove
 	private Master_Get_Connection mServ;
 	/*
 	 * Service Connection implementation for the activity to
@@ -121,14 +121,17 @@ public class SearchActivity extends ParentActivity {
 			}
 		});
 		
+		//TODO add in click for list
+		
+		//TODO this botton is for testing
 		Button backButton = (Button) findViewById(R.id.back);
 		final Context mActivity = this;
 		backButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				mServ.startedPlayMode();
-				Intent intent = new Intent(mActivity, Master_Play_Activity.class);
-				intent.putExtra("song","some song"); //TODO
+				Intent intent = new Intent(mActivity, MasterYouTubePlayActivity.class);
+				intent.putExtra("youTubeId","ZKEaypYJbb4"); //TODO 
 				mActivity.startActivity(intent);
 				
 			}
@@ -153,7 +156,6 @@ public class SearchActivity extends ParentActivity {
 		//Unbound with service, destroys service if no one else touched it
 		if(mIsBound)
 		{
-		
 			unbindService(_scon);
 			mIsBound = false;
 		}

@@ -25,19 +25,20 @@ public final class R {
         public static final int roundedbutton=0x7f020001;
     }
     public static final class id {
-        public static final int action_settings=0x7f09000c;
+        public static final int action_settings=0x7f09000d;
         public static final int back=0x7f090005;
         public static final int button1=0x7f090000;
         public static final int connection_num=0x7f090007;
-        public static final int imageY=0x7f09000a;
+        public static final int imageY=0x7f09000b;
         public static final int input=0x7f090001;
         public static final int next=0x7f090006;
         public static final int prev=0x7f090004;
-        public static final int rowLayout=0x7f090009;
+        public static final int rowLayout=0x7f09000a;
         public static final int searchButton=0x7f090002;
         public static final int text=0x7f090008;
-        public static final int title=0x7f09000b;
+        public static final int title=0x7f09000c;
         public static final int youTubeList=0x7f090003;
+        public static final int youtube_view=0x7f090009;
     }
     public static final class layout {
         public static final int activity_master_play=0x7f030000;
@@ -46,12 +47,14 @@ public final class R {
         public static final int activity_slave_play=0x7f030003;
         public static final int activity_waiting_for_song=0x7f030004;
         public static final int activity_welcome=0x7f030005;
-        public static final int youtube_list_row_layout=0x7f030006;
+        public static final int activity_you_tube_play=0x7f030006;
+        public static final int youtube_list_row_layout=0x7f030007;
     }
     public static final class menu {
         public static final int search=0x7f080000;
         public static final int waiting=0x7f080001;
         public static final int welcome=0x7f080002;
+        public static final int you_tube_play=0x7f080003;
     }
     public static final class raw {
         public static final int m=0x7f040000;
@@ -59,6 +62,7 @@ public final class R {
     }
     public static final class string {
         public static final int NumOfStartedConnections=0x7f060013;
+        public static final int Play=0x7f060017;
         public static final int Welcome=0x7f060003;
         public static final int action_settings=0x7f060001;
         public static final int app_name=0x7f060000;
@@ -74,9 +78,11 @@ public final class R {
         public static final int sender=0x7f060010;
         public static final int title_activity_master=0x7f06000d;
         public static final int title_activity_parent=0x7f060014;
+        public static final int title_activity_player=0x7f060015;
         public static final int title_activity_search=0x7f060006;
         public static final int title_activity_slave_play=0x7f060011;
         public static final int title_activity_waiting=0x7f060005;
+        public static final int title_activity_you_tube_play=0x7f060016;
         public static final int waitForStart=0x7f060012;
         public static final int wait_for_song=0x7f060004;
     }
