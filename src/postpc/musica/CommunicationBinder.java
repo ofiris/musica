@@ -20,6 +20,9 @@ public class CommunicationBinder extends Application {
 	public Channel mChannel;
 	public BroadcastReceiver mReceiver;
 	
+	public Master_Get_Connection mServ;
+	
+	
 	public static class ReaderWriterPair {
 		BufferedReader reader;
 		PrintWriter writer;

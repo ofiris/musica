@@ -28,9 +28,13 @@
             android:name="postpc.musica.Master_Get_Connection"
             android:enabled="true" >
         </service>
+        <service
+            android:name="postpc.musica.SoundPoolService"
+            android:enabled="true" >
+        </service>
 
         <activity
-            android:name="postpc.musica.WelcomeActivity"
+            android:name="postpc.musica.ChooseModeActivity"
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/app_name"
             android:screenOrientation="nosensor" >
@@ -40,6 +44,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
         <activity
             android:name="postpc.musica.WaitingActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -71,10 +76,12 @@
             android:screenOrientation="nosensor" >
         </activity>
         <activity
-            android:name="postpc.musica.MasterYouTubePlayActivity"
-            android:configChanges="keyboardHidden|orientation"
-            android:label="@string/title_activity_you_tube_play" 
-            android:screenOrientation="nosensor" >
+            android:name="postpc.musica.ConnectSpeakerActivity"
+            android:label="@string/title_activity_connect_speaker" >
+        </activity>
+        <activity
+            android:name="postpc.musica.ConnectBroadcasterActivity"
+            android:label="@string/title_activity_broadcaster" >
         </activity>
     </application>
 

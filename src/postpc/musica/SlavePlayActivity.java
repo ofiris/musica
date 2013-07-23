@@ -7,11 +7,15 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.google.android.youtube.player.YouTubePlayerView;
+
 import postpc.musica.MasterPlayActivity.PlayTask;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -19,53 +23,38 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class SlavePlayActivity extends ParentActivity{
-	private boolean mIsBound = false;
-	private MusicService mServ;
-	boolean playing = false;
+	private String youTubeId;
+	private TextView playText;
+	private boolean playing  = false;
+	YouTubePlayerView youTubeView ;
+	MusicYouTubeControl yCtrl;
 	BufferedReader br;
 	PrintWriter pw;
 	Timer timer = new Timer();
-
-	/*
-	 * Service Connection implementation for the activity to
-	 * use the binder, when the service is ready
-	 */
-	private ServiceConnection Scon =new ServiceConnection(){
-
-		public void onServiceConnected(ComponentName name, IBinder
-				binder) {
-			mServ = ((MusicService.ServiceBinder)binder).getService();
-		}
-
-		public void onServiceDisconnected(ComponentName name) {
-			mServ = null;
-		}
-	};
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_slave_play);
+		
+		playText = (TextView) findViewById(R.id.text); //TODO For debug
+		//youTubeId = getIntent().getExtras().getString("youTubeId");//TODO add from send
+		youTubeId = Consts.quckPlayVideo;
+		youTubeView = (YouTubePlayerView) findViewById(R.id.youtube_view);
+		yCtrl = new MusicYouTubeControl(this, playText, youTubeId, youTubeView);
 
-		/*
-		 * Bind service call, starts the service if it didn't start yet
-		 */
-		Intent intent = new Intent(this,MusicService.class);
-		intent.putExtra("right", 100);
-		intent.putExtra("left", 100);
-		bindService(intent,Scon,Context.BIND_AUTO_CREATE);
-		mIsBound = true;
 		br = ((CommunicationBinder)getApplication()).reader;
 		pw = ((CommunicationBinder)getApplication()).writer;
-		final TextView rep = (TextView) findViewById(R.id.text);
 
 		ReadFromMaster r = new ReadFromMaster(this, null);
 		r.execute();
 
 	}
+	
+
 
 	public class ReadFromMaster extends AsyncTask<Void, Void, String> {
 
@@ -101,10 +90,11 @@ public class SlavePlayActivity extends ParentActivity{
 					counter++;
 					pw.println("");
 				}
+				yCtrl.inPlayMode();
 				masterTime = Long.parseLong(br.readLine());
-				messageDelayTime=Math.max(90,bestMessageDelayTime);
+				//messageDelayTime=Math.max(90,bestMessageDelayTime);
 				System.out.println("timer "+(masterTime - System.currentTimeMillis() - bestClockDifference - messageDelayTime));
-				timer.schedule(new PlayTask(), masterTime - System.currentTimeMillis() - bestClockDifference - messageDelayTime);
+				
 				/*long tmp = Long.parseLong(br.readLine());
 				pw.println(System.currentTimeMillis());
 				pw.flush();
@@ -154,7 +144,7 @@ public class SlavePlayActivity extends ParentActivity{
 		@Override
 		protected void onPostExecute(String receivedMsg) {
 
-
+			timer.schedule(new PlayTask(), masterTime - System.currentTimeMillis() - bestClockDifference - 0);
 			System.out.println("clock " + bestClockDifference);
 			System.out.println("delay used "+ messageDelayTime);
 			System.out.println("real delay "+ bestMessageDelayTime);
@@ -164,20 +154,19 @@ public class SlavePlayActivity extends ParentActivity{
 	}	
 	class PlayTask extends TimerTask {
 		public void run() {
-			mServ.resumeMusic();
-			playing=true;
+			mHandler.obtainMessage(1).sendToTarget();
 			timer.cancel(); //Terminate the timer thread
 		}
+		public Handler mHandler = new Handler() {
+		    public void handleMessage(Message msg) {
+		    	yCtrl.resumeMusic();
+				playing=true; //this is the textview
+		    }
+		};
 	}
 
 	protected void onDestroy()
 	{
-		//Unbound with service, destroys service if no one else touched it
-		if(mIsBound)
-		{
-			unbindService(Scon);
-			mIsBound = false;
-		}
 		super.onDestroy();
 	}
 

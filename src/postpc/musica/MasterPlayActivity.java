@@ -1,23 +1,20 @@
 package postpc.musica;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.google.android.youtube.player.YouTubePlayerView;
+
 import postpc.musica.CommunicationBinder.ReaderWriterPair;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.app.Activity;
-import android.content.ComponentName;
-import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.content.Intent;
-import android.content.ServiceConnection;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -25,36 +22,25 @@ import android.widget.TextView;
 //TODO now use the youTubeOne. 
 public class MasterPlayActivity extends ParentActivity {
 
-	private boolean mIsBound = false;
-	private MusicService mServ;
-	boolean playing = false;
+	
+	private String youTubeId;
+	private Button playButton;
+	private boolean playing  = false;
+	YouTubePlayerView youTubeView ;
+	MusicYouTubeControl yCtrl;
 	HashMap<Socket, ReaderWriterPair> connections;
-	/*
-	 * Service Connection implementation for the activity to
-	 * use the binder, when the service is ready
-	 */
-	private ServiceConnection _scon = new ServiceConnection(){
 
-		public void onServiceConnected(ComponentName name, IBinder
-				binder) {
-			mServ = ((MusicService.ServiceBinder)binder).getService();
-			System.out.println("mServ = " + mServ);
-		}
-
-		public void onServiceDisconnected(ComponentName name) {
-			mServ = null;
-		}
-	};
 	Intent intent1;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_master_play);
-		intent1 = new Intent(this,MusicService.class);
-		intent1.putExtra("right", 100);
-		intent1.putExtra("left", 100);
-		bindService(intent1,_scon,Context.BIND_AUTO_CREATE);
-		mIsBound = true;
+		
+		playButton = (Button) findViewById(R.id.button1);
+		youTubeId = getIntent().getExtras().getString("youTubeId");
+		youTubeView = (YouTubePlayerView) findViewById(R.id.youtube_view);
+		yCtrl = new MusicYouTubeControl(this, (TextView)playButton, youTubeId, youTubeView);
+		
 		CommunicationBinder myCom = (CommunicationBinder) getApplication();
 		connections =myCom.connections;
 		/*
@@ -62,23 +48,21 @@ public class MasterPlayActivity extends ParentActivity {
 		 */
 
 
-		final Button button = (Button) findViewById(R.id.button1);
 		communicationTask = new CommunicateWithSlaves(); 
 		//communicationTask.execute();
 
-		button.setOnClickListener(new View.OnClickListener() {
+		playButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				if(playing==false && mServ!=null)
+				if(playing==false)
 				{
+					yCtrl.inPlayMode();
 					communicationTask.execute();
-					button.setText("Pause!");
-
+					//TODO add resume
 				}
-				else if(mServ!=null)
-				{
-					mServ.pauseMusic();
+				else{
+					//TODO use communicationTask
+					yCtrl.pauseMusic();
 					playing=false;
-					button.setText("Play!");
 				}
 			}
 
@@ -116,7 +100,7 @@ public class MasterPlayActivity extends ParentActivity {
 					}
 					
 				}
-				timeToStart = System.currentTimeMillis() + 2000;
+				timeToStart = System.currentTimeMillis() + 6000; //TODO changed, was 2000
 				for (ReaderWriterPair pair : connections.values()){
 					pair.writer.println(timeToStart);
 				}
@@ -168,23 +152,23 @@ public class MasterPlayActivity extends ParentActivity {
 	}
 	protected void onDestroy()
 	{
-		//Unbound with service, destroys service if no one else touched it
-		if(mIsBound)
-		{
-			unbindService(_scon);
-			mIsBound = false;
-		}
 		super.onDestroy();
 	}
 
 	class PlayTask extends TimerTask {
 		public void run() {
-			mServ.resumeMusic();
-			playing=true;
+			mHandler.obtainMessage(1).sendToTarget();
 			t.cancel(); //Terminate the timer thread
 		}
 	}
-
+	public Handler mHandler = new Handler() {
+	    public void handleMessage(Message msg) {
+	    	yCtrl.resumeMusic();
+			playing=true; //this is the textview
+	    }
+	};
+	
+	
 	class CalculateDelayThread extends Thread {
 		int sleep;
 		public CalculateDelayThread (int sleep){

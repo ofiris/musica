@@ -12,7 +12,7 @@
     <string name="search">search</string>
     <string name="initText">results</string>
     <string name="next">next</string>
-    <string name="back">quick play</string>
+    <string name="back">back</string>
     <string name="prev">prev</string>
     <string name="title_activity_master">MasterActivity</string>
     <string name="play">Play!</string>
@@ -22,8 +22,12 @@
     <string name="waitForStart">waiting For Start</string>
     <string name="NumOfStartedConnections">0</string>
     <string name="title_activity_parent">ParentActivity</string>
-    <string name="title_activity_player">playerYouTube</string>
-    <string name="title_activity_you_tube_play">YouTubePlayActivity</string>
-    <string name="Play">start load</string>
+    <string name="Speaker">Speaker</string>
+    <string name="Broadcaster">Broadcaster</string>
+    <string name="title_activity_connect_speaker">ConnectSpeakerActivity</string>
+    <string name="title_activity_broadcaster">BroadcasterActivity</string>
+    <string name="chooseSong">Choose Song</string>
+    <string name="zeroConnections">0</string>
+     <string name="Play">start load</string>
 
 </resources>

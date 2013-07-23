@@ -141,7 +141,7 @@ public class Master_Get_Connection extends Service {
 			}catch (SocketException e){
 				return null;
 			}catch (IOException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 				return null;
 			}
 			

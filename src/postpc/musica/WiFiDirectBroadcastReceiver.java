@@ -115,19 +115,11 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
 			System.out.println("Found peers");
 			//Toast.makeText(mActivity, "found peers", Toast.LENGTH_LONG).show();
 			for (WifiP2pDevice peer : peers.getDeviceList()){
-				if (!peer.isGroupOwner()) continue;
-				foundOwner = true;
 				WifiP2pConfig config = new WifiP2pConfig();
 				config.deviceAddress = peer.deviceAddress;
 				config.wps.setup = WpsInfo.PBC;
 				mManager.connect(mChannel, config, new ConnectionActionListener(config));
-			}
-				
-			
-			if (foundOwner) return;
-			System.out.println("creating group");
-			mManager.createGroup(mChannel, null);
-			
+			}			
 		}
 
 

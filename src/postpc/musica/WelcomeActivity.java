@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -19,7 +18,6 @@ import android.view.Menu;
 
 
 public class WelcomeActivity extends ParentActivity {
-	boolean debugYouTube = true; //TODO
 	WifiP2pManager mManager;
 	Channel mChannel;
 	BroadcastReceiver mReceiver;
@@ -31,11 +29,6 @@ public class WelcomeActivity extends ParentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_welcome);
-		if(debugYouTube){
-			Intent intent = new Intent(this, SearchActivity.class);
-			this.startActivity(intent);	
-			return;
-		}
 		mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
 		mChannel = mManager.initialize(this, getMainLooper(), null);
 		mManager.removeGroup(mChannel, new RemoveGroupListener());
@@ -72,11 +65,6 @@ public class WelcomeActivity extends ParentActivity {
 
 		@Override
 		public void onFailure(int arg0) {
-<<<<<<< HEAD
-			//TODO ?
-=======
-			int a = 5;	//TODO
->>>>>>> origin/master
 			mManager.cancelConnect(mChannel, new CancelConnectionsListener());
 		}
 
@@ -92,11 +80,6 @@ public class WelcomeActivity extends ParentActivity {
 
 		@Override
 		public void onFailure(int arg0) {
-<<<<<<< HEAD
-			//TODO ?
-=======
-			int a = 5;	//TODO
->>>>>>> origin/master
 			startWifiActivity();
 		}
 

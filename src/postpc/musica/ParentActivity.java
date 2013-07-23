@@ -3,12 +3,12 @@ package postpc.musica;
 import java.io.IOException;
 import java.net.Socket;
 
+import com.google.android.youtube.player.YouTubeBaseActivity;
+
 import postpc.musica.CommunicationBinder.ReaderWriterPair;
 import android.os.Bundle;
-import android.app.Activity;
-import android.view.Menu;
 
-public abstract class ParentActivity extends Activity {
+public abstract class ParentActivity extends YouTubeBaseActivity {
 	CommunicationBinder myCom;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

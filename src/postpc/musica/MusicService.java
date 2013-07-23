@@ -50,7 +50,11 @@ public class MusicService extends Service{
         {
         	mPlayer.setLooping(true);
         	mPlayer.setVolume(100,100);
+        	mPlayer.seekTo(length);
+    		mPlayer.start();
+    		mPlayer.pause();
         }
+       
 	}
 
     @Override
