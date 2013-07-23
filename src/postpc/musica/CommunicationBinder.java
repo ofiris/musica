@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.HashMap;
-
 import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.net.wifi.p2p.WifiP2pManager;
