@@ -56,7 +56,8 @@ public final class R {
         public static final int activity_waiting_for_song=0x7f030007;
         public static final int activity_welcome=0x7f030008;
         public static final int activity_welcome_broadcaster=0x7f030009;
-        public static final int youtube_list_row_layout=0x7f03000a;
+        public static final int activity_you_tube_play=0x7f03000a;
+        public static final int youtube_list_row_layout=0x7f03000b;
     }
     public static final class menu {
         public static final int broadcaster=0x7f080000;
@@ -67,9 +68,11 @@ public final class R {
         public static final int slave_play=0x7f080005;
         public static final int waiting=0x7f080006;
         public static final int welcome=0x7f080007;
+        public static final int you_tube_play=0x7f080008;
     }
     public static final class raw {
         public static final int m=0x7f040000;
+        public static final int m1=0x7f040001;
     }
     public static final class string {
         public static final int Broadcaster=0x7f060016;
