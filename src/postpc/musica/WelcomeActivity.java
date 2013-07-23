@@ -65,6 +65,7 @@ public class WelcomeActivity extends ParentActivity {
 
 		@Override
 		public void onFailure(int arg0) {
+			int a = 5;	//TODO
 			mManager.cancelConnect(mChannel, new CancelConnectionsListener());
 		}
 
@@ -80,6 +81,7 @@ public class WelcomeActivity extends ParentActivity {
 
 		@Override
 		public void onFailure(int arg0) {
+			int a = 5;	//TODO
 			startWifiActivity();
 		}
 
