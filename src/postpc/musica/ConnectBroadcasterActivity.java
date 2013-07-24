@@ -22,6 +22,8 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class ConnectBroadcasterActivity extends Activity {
 
@@ -33,6 +35,7 @@ public class ConnectBroadcasterActivity extends Activity {
 	private CommunicationBinder myCom;
 	private boolean mIsBound = false;
 	private Master_Get_Connection mServ;
+	TextView connectionsTextView;
 	/*
 	 * Service Connection implementation for the activity to
 	 * use the binder, when the service is ready
@@ -42,6 +45,7 @@ public class ConnectBroadcasterActivity extends Activity {
 		public void onServiceConnected(ComponentName name, IBinder
 				binder) {
 			mServ = ((Master_Get_Connection.ServiceBinder)binder).getService();
+			mServ.sendTextView(connectionsTextView);
 			mIsBound = true;
 			myCom.mServ = mServ;
 			System.out.println("mServ = " + mServ);
@@ -59,6 +63,7 @@ public class ConnectBroadcasterActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_welcome_broadcaster);
 		mIntentFilter = new IntentFilter();
+		Toast.makeText(this, "After all speakers\nconnected press\n\"Choose Song\"", Toast.LENGTH_LONG).show();
 		mReceiver = new BroadcastReceiverBroadcaster(mManager, mChannel, this);
 		mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
 		mChannel = mManager.initialize(this, getMainLooper(), null);
@@ -78,6 +83,7 @@ public class ConnectBroadcasterActivity extends Activity {
 				
 			}
 		});
+		connectionsTextView = (TextView)findViewById(R.id.numOfConnections);
 		Intent intent = new Intent(this,Master_Get_Connection.class);
 		bindService(intent,_scon,Context.BIND_AUTO_CREATE);
 		mManager.removeGroup(mChannel, new RemoveGroupListener());

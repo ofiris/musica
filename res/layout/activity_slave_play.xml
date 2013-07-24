@@ -14,13 +14,15 @@
       android:layout_height="wrap_content"/>
 
     <TextView
-        android:id="@+id/text"
+        android:id="@+id/slave_play"
+        style="@style/slave_play_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/youtube_view"
-        android:layout_marginBottom="92dp"
-        android:layout_marginRight="60dp"
-        android:text="@string/waitForStart" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="105dp"
+        android:clickable="false"
+        android:text="@string/waitForStart"
+        android:textSize="35sp" />
 
 </RelativeLayout>

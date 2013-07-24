@@ -1,19 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
     <Button
-        android:id="@+id/speaker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Speaker" />
-
-    <Button
         android:id="@+id/broadcaster"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/Broadcaster" />
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="90dp"
+        android:text="@string/Broadcaster"
+        android:textSize="35sp" />
 
-</LinearLayout>
+    <Button
+        android:id="@+id/speaker"
+        style="@style/speaker_mode_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/broadcaster"
+        android:layout_alignRight="@+id/broadcaster"
+        android:layout_centerVertical="true"
+        android:text="@string/Speaker"
+        android:textSize="35sp" />
+
+</RelativeLayout>

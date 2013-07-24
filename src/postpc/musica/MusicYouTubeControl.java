@@ -1,8 +1,13 @@
 package postpc.musica;
 
 import java.util.Timer;
+import java.util.TimerTask;
+
+import postpc.musica.MasterPlayActivity.PlayTask;
 
 import android.os.Handler;
+import android.os.Message;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,16 +30,17 @@ public class MusicYouTubeControl implements YouTubePlayer.OnInitializedListener{
 	YouTubePlayerView youTubeView ;
 	YouTubeBaseActivity mainActivity;
 	private Handler myBuffHandler;
+	private Button masterButton;
 
-	public MusicYouTubeControl(YouTubeBaseActivity mActivity, TextView pButton, String yId, YouTubePlayerView yView){
+	public MusicYouTubeControl(YouTubeBaseActivity mActivity, TextView slaveTextView, Button masterButton, String yId, YouTubePlayerView yView){
 		playerStateChangeListener = new MyPlayerStateChangeListener();
 		mainActivity = mActivity;
-		playButton = pButton;
+		playButton = slaveTextView;
 		youTubeId = yId;
 		youTubeView = yView;
 		youTubeView.initialize(Consts.DEVELOPER_KEY, this); //will go to onInitializationSuccess
 		myBuffHandler = new Handler();
-
+		this.masterButton = masterButton;
 	}
 
 	Runnable bufferLoadRun = new Runnable()
@@ -42,33 +48,32 @@ public class MusicYouTubeControl implements YouTubePlayer.OnInitializedListener{
 		@Override 
 		public void run() {
 			if(playState == -1){
-				playButton.setText("not loaded yet");
+				if (masterButton!=null)masterButton.setText("not loaded yet");
 				return;
 			}
 			//playButton.setText("bufferRun");
 			player.play();
-			//TODO remove volume
-			System.out.println("Post Delayed 4000");
-			myBuffHandler.postDelayed(bufferLoad, 4000);
-			System.out.println("Post Delayed 4000");
+			
 		}
 	};
-	Runnable bufferLoad = new Runnable()
-	{
-		@Override 
+	
+	Timer t;
+	class ShowStartButton extends TimerTask {
 		public void run() {
-			//playButton.setText("buffering");
-			playState = 0;
-			//player.pause();
-			//player.seekToMillis(1);
-			//TODO add volume
+			mHandler.obtainMessage(1).sendToTarget();
+			t.cancel(); //Terminate the timer thread
 		}
+	}
+	public Handler mHandler = new Handler() {
+	    public void handleMessage(Message msg) {
+	    	if (masterButton!=null)masterButton.setEnabled(true);
+	    }
 	};
-
+	
 
 	public void resumeMusic(){
 		if(playState == 0){
-			playButton.setText("pause");
+			if (masterButton!=null)masterButton.setText("pause");
 			playState = 1;
 			player.play();
 		}
@@ -76,7 +81,7 @@ public class MusicYouTubeControl implements YouTubePlayer.OnInitializedListener{
 
 	public void pauseMusic(){
 		if(playState == 1){
-			playButton.setText("play");
+			if (masterButton!=null)masterButton.setText("play");
 			playState = 0;
 			player.pause();
 		}
@@ -100,11 +105,8 @@ public class MusicYouTubeControl implements YouTubePlayer.OnInitializedListener{
 
 		player.setPlayerStateChangeListener(playerStateChangeListener);// will go to onLoaded
 		player.setPlaybackEventListener(playerStateChangeListener);
-		if (!wasRestored) {
-			System.out.println("wasRestored ? WTF");
-			//player.cueVideo(youTubeId);
-			player.loadVideo(youTubeId);
-		}
+		player.loadVideo(youTubeId);
+
 
 	}
 	boolean isInPlayMode = false;
@@ -119,7 +121,7 @@ public class MusicYouTubeControl implements YouTubePlayer.OnInitializedListener{
 		public void onBuffering(boolean isBuffering)
 		{
 			if (isBuffering && realVideoStarted && isInPlayMode){
-				
+
 			}
 			System.out.println("IsBuffering: " + isBuffering);			
 		}
@@ -131,7 +133,7 @@ public class MusicYouTubeControl implements YouTubePlayer.OnInitializedListener{
 		public void onLoaded(String videoId) {
 			if(playState == -1){
 				//playButton.setText("loaded -  play");
-				myBuffHandler.postDelayed(bufferLoadRun, 4000);
+				myBuffHandler.postDelayed(bufferLoadRun, 500);
 				playState = 0;
 			}
 		}
@@ -168,7 +170,9 @@ public class MusicYouTubeControl implements YouTubePlayer.OnInitializedListener{
 				return;
 			if (!isInPlayMode){
 				player.pause();
-				player.seekToMillis(0);
+				player.seekToMillis(1);
+				t = new Timer();
+				t.schedule(new ShowStartButton(), 10000);
 			}
 			System.out.println("onPlaying");
 		}

@@ -19,6 +19,7 @@ import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class Master_Get_Connection extends Service {
@@ -28,7 +29,7 @@ public class Master_Get_Connection extends Service {
 	private HashMap<Socket, CommunicationBinder.ReaderWriterPair> connections;
 	private Intent intent;
 	private ServerSocket serverSocket;
-
+	private TextView connectionsTextView;
 	private boolean inPlayMode = false;
 	public Master_Get_Connection() { 
 		
@@ -65,7 +66,6 @@ public class Master_Get_Connection extends Service {
 		CommunicationBinder myCom = (CommunicationBinder) getApplication();
 		myCom.connections = new HashMap<Socket, ReaderWriterPair>();
 		connections = myCom.connections;
-		Toast.makeText(getApplicationContext(), "in service", Toast.LENGTH_SHORT).show();
 		(new CreateCommunicationGroupOwner(null,null)).execute();
 	}
 
@@ -151,8 +151,10 @@ public class Master_Get_Connection extends Service {
 		protected void onPostExecute(Socket socket) {
 			//if (socket != null)
 			//Toast.makeText(getApplicationContext(), "connect", Toast.LENGTH_SHORT).show();
-			if (!inPlayMode)
+			if (!inPlayMode){
+				connectionsTextView.setText("Number of speakers connected: " + connections.size());
 				continueListening();
+			}
 			
 		}
 	}
@@ -165,6 +167,11 @@ public class Master_Get_Connection extends Service {
 			pair.writer.flush();
 		}
 		
+		
+	}
+
+	public void sendTextView(TextView connectionsTextView) {
+		this.connectionsTextView =  connectionsTextView;
 		
 	}
 

@@ -28,7 +28,7 @@ public class ConnectSpeakerActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_welcome);
+		setContentView(R.layout.activity_connecting);
 		mIntentFilter = new IntentFilter();
 		mReceiver = new BroadcastReceiverSpeaker(mManager, mChannel, this);
 		mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);

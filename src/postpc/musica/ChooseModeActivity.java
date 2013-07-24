@@ -12,14 +12,6 @@ public class ChooseModeActivity extends ParentActivity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_choose_mode);
-		
-		if(Consts.debugYouTube){
-			Intent intent = new Intent(this, SearchActivity.class);
-			//intent.putExtra("youTubeId",Consts.quckPlayVideo); //TODO 
-			this.startActivity(intent);
-			return;
-		}
-		
 		Button speaker    =(Button) findViewById(R.id.speaker);
 		Button broadaster =(Button) findViewById(R.id.broadcaster);
 

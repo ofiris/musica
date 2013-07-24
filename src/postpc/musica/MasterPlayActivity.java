@@ -39,7 +39,7 @@ public class MasterPlayActivity extends ParentActivity {
 		playButton = (Button) findViewById(R.id.button1);
 		youTubeId = getIntent().getExtras().getString("youTubeId");
 		youTubeView = (YouTubePlayerView) findViewById(R.id.youtube_view);
-		yCtrl = new MusicYouTubeControl(this, (TextView)playButton, youTubeId, youTubeView);
+		yCtrl = new MusicYouTubeControl(this, null,playButton, youTubeId, youTubeView);
 		
 		CommunicationBinder myCom = (CommunicationBinder) getApplication();
 		connections =myCom.connections;
@@ -49,15 +49,20 @@ public class MasterPlayActivity extends ParentActivity {
 
 
 		communicationTask = new CommunicateWithSlaves(); 
-		//communicationTask.execute();
+		communicationTask.execute();
 
 		playButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				if(playing==false)
 				{
 					yCtrl.inPlayMode();
-					communicationTask.execute();
-					//TODO add resume
+					timeToStart = System.currentTimeMillis() + 3000; //TODO changed, was 2000
+					for (ReaderWriterPair pair : connections.values()){
+						pair.writer.println(timeToStart);
+					}
+					t = new Timer();
+					t.schedule(new PlayTask(), timeToStart- System.currentTimeMillis());
+					
 				}
 				else{
 					//TODO use communicationTask
@@ -100,50 +105,18 @@ public class MasterPlayActivity extends ParentActivity {
 					}
 					
 				}
-				timeToStart = System.currentTimeMillis() + 6000; //TODO changed, was 2000
-				for (ReaderWriterPair pair : connections.values()){
-					pair.writer.println(timeToStart);
-				}
+				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
-			/*
-			for (int i=0;i<5;i++){
-				for (ReaderWriterPair pair : connections.values()){
-					pair.writer.println(System.currentTimeMillis());
-				}
-			}
-			 */
-
-
-			/*
-			for (ReaderWriterPair pair : connections.values()){
-				pair.writer.println(timeToStart);
-			}
-			 */
-			/*
-			(new CalculateDelayThread(100)).start();
-			(new CalculateDelayThread(500)).start();
-			(new CalculateDelayThread(1000)).start();
-			(new NotifyThread(1500)).start();
-			(new NotifyThread(2000)).start();
-			(new NotifyThread(2500)).start();
-			(new NotifyThread(3000)).start();
-			(new NotifyThread(3500)).start();
-
-
-			(new NotifyTimeToStartThread(4000)).start();
-			 */
 		}
 
 		@Override
 		protected String doInBackground(Void... params) {
 
 			informSlaves();
-			t = new Timer();
-			t.schedule(new PlayTask(), timeToStart- System.currentTimeMillis());
+			
 
 			return null;
 		}

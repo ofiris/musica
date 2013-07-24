@@ -15,6 +15,7 @@ import android.net.wifi.p2p.WifiP2pInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -43,10 +44,10 @@ public class WaitingActivity extends ParentActivity {
 		info = getIntent().getParcelableExtra("info");
 		setContentView(R.layout.activity_waiting_for_song);
 		String [] host = {info.groupOwnerAddress.getHostAddress()};
-		Toast.makeText(this, "I am not the group owner", Toast.LENGTH_LONG).show();
 		new CreateCommunicationClient(this, layoutView).execute(host);
-		
-		
+		TextView txtView = (TextView) findViewById(R.id.wait_for_song);
+		String str = "Waiting for\n " + getIntent().getStringExtra("owner") + " to\nchoose\na\nsong";
+		txtView.setText(str);
 	}
 
 	private void readFromUserClient() {

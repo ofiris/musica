@@ -10,6 +10,7 @@ import java.util.TimerTask;
 import com.google.android.youtube.player.YouTubePlayerView;
 
 import postpc.musica.MasterPlayActivity.PlayTask;
+import postpc.musica.R.color;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,6 +22,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
+import android.graphics.Shader.TileMode;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -40,11 +45,12 @@ public class SlavePlayActivity extends ParentActivity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_slave_play);
 		
-		playText = (TextView) findViewById(R.id.text); //TODO For debug
+		playText = (TextView) findViewById(R.id.slave_play); //TODO For debug
+		//setTextView();
 		//youTubeId = getIntent().getExtras().getString("youTubeId");//TODO add from send
 		youTubeId = Consts.quckPlayVideo;
 		youTubeView = (YouTubePlayerView) findViewById(R.id.youtube_view);
-		yCtrl = new MusicYouTubeControl(this, playText, youTubeId, youTubeView);
+		yCtrl = new MusicYouTubeControl(this, playText,null, youTubeId, youTubeView);
 
 		br = ((CommunicationBinder)getApplication()).reader;
 		pw = ((CommunicationBinder)getApplication()).writer;
@@ -54,6 +60,18 @@ public class SlavePlayActivity extends ParentActivity{
 
 	}
 	
+
+
+	private void setTextView() {
+	     int[] color = {Color.DKGRAY,Color.CYAN};
+	     float[] position = {0, 1};
+	     TileMode tile_mode = TileMode.MIRROR; // or TileMode.REPEAT;
+	     LinearGradient lin_grad = new LinearGradient(0, 0, 0, 50,color,position, tile_mode);
+	     Shader shader_gradient = lin_grad;
+	     playText.getPaint().setShader(shader_gradient);
+		
+	}
+
 
 
 	public class ReadFromMaster extends AsyncTask<Void, Void, String> {
@@ -90,47 +108,10 @@ public class SlavePlayActivity extends ParentActivity{
 					counter++;
 					pw.println("");
 				}
-				yCtrl.inPlayMode();
-				masterTime = Long.parseLong(br.readLine());
-				//messageDelayTime=Math.max(90,bestMessageDelayTime);
-				System.out.println("timer "+(masterTime - System.currentTimeMillis() - bestClockDifference - messageDelayTime));
 				
-				/*long tmp = Long.parseLong(br.readLine());
-				pw.println(System.currentTimeMillis());
-				pw.flush();
-				String tmpStr1 = br.readLine();
-				messageDelayTime1 = Long.parseLong(tmpStr1);
-				System.out.println("Str1 " + tmpStr1);
-
-				tmp = Long.parseLong(br.readLine());
-				pw.println(System.currentTimeMillis());
-				pw.flush();
-				String tmpStr2 = br.readLine();
-				messageDelayTime2 = Long.parseLong(tmpStr2);
-				System.out.println("Str2 " + tmpStr2);
-
-
-				tmp = Long.parseLong(br.readLine());
-				pw.println(System.currentTimeMillis());
-
-				String tmpStr3 = br.readLine();
-				messageDelayTime3 = Long.parseLong(tmpStr3);
-				System.out.println("Str3 " + tmpStr3);		
-
-				//parsingTime = System.currentTimeMillis();
-				avg1 = Long.parseLong(br.readLine()) - System.currentTimeMillis();
-				//parsingTime = System.currentTimeMillis() - parsingTime;
-				avg2 = Long.parseLong(br.readLine()) - System.currentTimeMillis();
-
-				avg3 = Long.parseLong(br.readLine()) - System.currentTimeMillis();
-				avg4 = Long.parseLong(br.readLine()) - System.currentTimeMillis();
-
-				avg5 = Long.parseLong(br.readLine()) - System.currentTimeMillis();
-
-				averageDifference = (avg4 +avg5)/2;
 				masterTime = Long.parseLong(br.readLine());
-				messageDelayTime = (long) (messageDelayTime1 + messageDelayTime2 + messageDelayTime3)/3;
-				timer.schedule(new PlayTask(), masterTime - System.currentTimeMillis() - averageDifference - messageDelayTime);*/
+				yCtrl.inPlayMode();
+				System.out.println("timer "+(masterTime - System.currentTimeMillis() - bestClockDifference - messageDelayTime));
 				return "";
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

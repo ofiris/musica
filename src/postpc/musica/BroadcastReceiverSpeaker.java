@@ -102,7 +102,7 @@ public class BroadcastReceiverSpeaker extends BroadcastReceiver {
 	public void listPeers(){
 		mManager.requestPeers(mChannel, myPeerListListener);
 	}
-
+	String groupOwner;
 	boolean foundOwner = false;
 	public class DirectWifiPeersListener implements PeerListListener{
 
@@ -116,6 +116,7 @@ public class BroadcastReceiverSpeaker extends BroadcastReceiver {
 			for (WifiP2pDevice peer : peers.getDeviceList()){
 				if (peer.isGroupOwner()){
 					System.out.println("group owner is "+peer.deviceName);
+					groupOwner = peer.deviceName;
 					WifiP2pConfig config = new WifiP2pConfig();
 					config.deviceAddress = peer.deviceAddress;
 					config.wps.setup = WpsInfo.PBC;
@@ -158,6 +159,7 @@ public class BroadcastReceiverSpeaker extends BroadcastReceiver {
 			else if (info.groupFormed){
 				Intent intent = new Intent(mActivity, WaitingActivity.class);
 				intent.putExtra("info",info);
+				intent.putExtra("owner", groupOwner);
 				mActivity.startActivity(intent);
 			} else
 				try {
