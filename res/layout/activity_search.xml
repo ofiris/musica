@@ -36,45 +36,20 @@
         android:id="@+id/youTubeList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/prev"
         android:layout_alignLeft="@+id/input"
         android:layout_alignRight="@+id/searchButton"
-        android:layout_below="@+id/input" >
+        android:layout_below="@+id/input"
+        android:background="#d7e2ea" >
 
     </ListView>
-
-    <Button
-        android:id="@+id/prev"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/youTubeList"
-        android:layout_alignParentBottom="true"
-        android:text="@string/prev" />
 
     <Button
         android:id="@+id/back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
+        android:layout_alignBaseline="@+id/input"
+        android:layout_alignBottom="@+id/input"
+        android:layout_toRightOf="@+id/input"
         android:text="@string/back" />
-
-    <Button
-        android:id="@+id/next"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/youTubeList"
-        android:text="@string/next" />
-
-    <TextView
-        android:id="@+id/connection_num"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/youTubeList"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="14dp"
-        android:text="@string/NumOfStartedConnections"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>

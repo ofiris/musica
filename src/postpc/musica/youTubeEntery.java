@@ -5,8 +5,8 @@ public class youTubeEntery {
 	public youTubeEntery(String title, String tumb, String videoId) {
 		this.title = title;
 		this.tumb = tumb;
-		//TODO get last
-		this.tumb = videoId;
+		String[] parts = videoId.split("/");
+		this.videoId = parts[parts.length - 1];
 	}
 
 	public String videoId;

@@ -25,6 +25,8 @@ import android.content.ServiceConnection;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,7 +36,7 @@ import android.widget.Toast;
 
 public class SearchActivity extends ParentActivity {
 
-	private  ListView youTubeList;
+	private ListView youTubeList;
 	private ArrayAdapter<youTubeEntery> listAdapter;
 	private int curListPlace=1;
 	private String querry = "";
@@ -57,7 +59,7 @@ public class SearchActivity extends ParentActivity {
 			mServ = null;
 		}
 	};
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -65,13 +67,12 @@ public class SearchActivity extends ParentActivity {
 		List<youTubeEntery> list = new ArrayList<youTubeEntery>();
 		youTubeList = (ListView)findViewById(R.id.youTubeList);     
 		mServ = ((CommunicationBinder)getApplication()).mServ;
-		
-		
-		
+
+
+
 		mIsBound = true;
-		listAdapter = new listAdapt(this, list);
+		listAdapter = new listAdapt(this, list, mServ);
 		youTubeList.setAdapter(listAdapter);
-		registerForContextMenu(youTubeList);
 
 		Button searchButton = (Button) findViewById(R.id.searchButton);
 		final EditText textIn = (EditText)findViewById(R.id.input);
@@ -95,32 +96,9 @@ public class SearchActivity extends ParentActivity {
 				new getSearchList(listAdapter).execute(fullQuerry);
 			}
 		});
-		Button nextButton = (Button) findViewById(R.id.next);
-		nextButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				listAdapter.clear();
-				int numOfRes = Consts.searchNum;
-				curListPlace += numOfRes;
-				String fullQuerry=querry + "&alt=json&start-index="+curListPlace+
-						"&max-results="+(curListPlace + numOfRes);
-				new getSearchList(listAdapter).execute(fullQuerry);
-			}
-		});
-		Button prevButton = (Button) findViewById(R.id.prev);
-		prevButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				if(curListPlace == 1) return;
-				listAdapter.clear();
-				int numOfRes = Consts.searchNum;
-				curListPlace -= numOfRes;
-				String fullQuerry=querry + "&alt=json&start-index="+curListPlace+
-						"&max-results="+(curListPlace + numOfRes);
-				new getSearchList(listAdapter).execute(fullQuerry);
-			}
-		});
-		
+
+
+
 		Button backButton = (Button) findViewById(R.id.back);
 		final Context mActivity = this;
 		backButton.setOnClickListener(new OnClickListener() {
@@ -130,7 +108,7 @@ public class SearchActivity extends ParentActivity {
 				Intent intent = new Intent(mActivity, MasterPlayActivity.class);
 				intent.putExtra("youTubeId",Consts.quckPlayVideo); //TODO in upper send to other
 				mActivity.startActivity(intent);
-				
+
 			}
 		});
 		//Intent intent = new Intent(this,Master_Get_Connection.class);
@@ -138,7 +116,7 @@ public class SearchActivity extends ParentActivity {
 
 	}
 
-	
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -146,18 +124,19 @@ public class SearchActivity extends ParentActivity {
 		getMenuInflater().inflate(R.menu.search, menu);
 		return true;
 	}
-	
+
 	protected void onDestroy()
 	{
 		super.onDestroy();
 		//Unbound with service, destroys service if no one else touched it
 		if(mIsBound)
 		{
-		
+
 			unbindService(_scon);
 			mIsBound = false;
 		}
-		
+
 	}
-	
+
 }
+
