@@ -24,25 +24,27 @@ public class MusicYouTubeControl implements YouTubePlayer.OnInitializedListener{
 
 	private String youTubeId;
 	int playState = -1; //-1 = not started, 1 = started
-	private TextView playButton;
+
 	private YouTubePlayer player;
 	private MyPlayerStateChangeListener playerStateChangeListener;
 	YouTubePlayerView youTubeView ;
 	YouTubeBaseActivity mainActivity;
 	private Handler myBuffHandler;
 	private Button masterButton;
-
+	private TextView slaveTextView;
+	private boolean checkingDelay = false;
+	
 	public MusicYouTubeControl(YouTubeBaseActivity mActivity, TextView slaveTextView, Button masterButton, String yId, YouTubePlayerView yView){
-		playerStateChangeListener = new MyPlayerStateChangeListener();
-		mainActivity = mActivity;
-		playButton = slaveTextView;
-		youTubeId = yId;
-		youTubeView = yView;
-		youTubeView.initialize(Consts.DEVELOPER_KEY, this); //will go to onInitializationSuccess
-		myBuffHandler = new Handler();
+		this.playerStateChangeListener = new MyPlayerStateChangeListener();
+		this.mainActivity = mActivity;
+		this.slaveTextView = slaveTextView;
+		this.youTubeId = yId;
+		this.youTubeView = yView;
+		this.youTubeView.initialize(Consts.DEVELOPER_KEY, this); //will go to onInitializationSuccess
+		this.myBuffHandler = new Handler();
 		this.masterButton = masterButton;
 	}
-
+	long playDelay=0;
 	Runnable bufferLoadRun = new Runnable()
 	{
 		@Override 
@@ -52,29 +54,44 @@ public class MusicYouTubeControl implements YouTubePlayer.OnInitializedListener{
 				return;
 			}
 			//playButton.setText("bufferRun");
+
 			player.play();
-			
+			System.out.println("pressed play");
+
 		}
 	};
-	
+
 	Timer t;
 	class ShowStartButton extends TimerTask {
 		public void run() {
 			mHandler.obtainMessage(1).sendToTarget();
-			t.cancel(); //Terminate the timer thread
+			//t.cancel(); //Terminate the timer thread
 		}
 	}
 	public Handler mHandler = new Handler() {
-	    public void handleMessage(Message msg) {
-	    	if (masterButton!=null)masterButton.setEnabled(true);
-	    }
+		public void handleMessage(Message msg) {
+			if (masterButton!=null){
+				masterButton.setEnabled(true);
+				masterButton.setText("Play");
+			}
+		}
 	};
 	
+	class CalculateDelay extends TimerTask {
+		public void run() {
+			checkingDelay = true;
+			playDelay = System.nanoTime();
+			player.play();
+		}
+	}
+	
+	
+
 
 	public void resumeMusic(){
 		if(playState == 0){
-			if (masterButton!=null)masterButton.setText("pause");
 			playState = 1;
+			playDelay = System.nanoTime();
 			player.play();
 		}
 	}
@@ -114,15 +131,21 @@ public class MusicYouTubeControl implements YouTubePlayer.OnInitializedListener{
 	public void inPlayMode(){
 		isInPlayMode = true;
 	}
+	boolean firstPlay = true; 
 
+	public long getPlayDelay(){
+		return playDelay;
+	}
 	private final class MyPlayerStateChangeListener implements PlayerStateChangeListener, PlaybackEventListener {
 		boolean realVideoStarted = false;
 		@Override
 		public void onBuffering(boolean isBuffering)
 		{
-			if (isBuffering && realVideoStarted && isInPlayMode){
-
+			gotBuffer = true;
+			if (!isBuffering){
+				playDelay = System.nanoTime();
 			}
+			gotBuffer = true;
 			System.out.println("IsBuffering: " + isBuffering);			
 		}
 
@@ -160,21 +183,44 @@ public class MusicYouTubeControl implements YouTubePlayer.OnInitializedListener{
 
 		@Override
 		public void onPaused() {
-			// TODO Auto-generated method stub
+			if (nowRealyPlay){
+				mainActivity.finish();
+			}
 			System.out.println("onPaused");
 		}
-
+		boolean gotBuffer = false;
+		boolean nowRealyPlay = false;
+		
 		@Override
 		public void onPlaying() {
-			if (!realVideoStarted)
-				return;
-			if (!isInPlayMode){
-				player.pause();
-				player.seekToMillis(1);
-				t = new Timer();
-				t.schedule(new ShowStartButton(), 10000);
+			playDelay = (System.nanoTime() - playDelay)/1000000;
+			if (isInPlayMode)
+			{
+				nowRealyPlay = true;
+				System.out.println("real play delay is: " + playDelay);
+				Toast.makeText(mainActivity, "the real play delay is: " + playDelay, Toast.LENGTH_SHORT).show();
 			}
-			System.out.println("onPlaying");
+			else if (checkingDelay){
+				Toast.makeText(mainActivity, "the first play delay is: " + playDelay, Toast.LENGTH_SHORT).show();
+				System.out.println("The initial delay is:" +playDelay);
+				checkingDelay = false;
+				if (gotBuffer){
+					System.out.println("no good got buffer");
+				}
+				player.pause();
+				player.seekToMillis(0);
+				t = new Timer();
+				t.schedule(new ShowStartButton(), 1000);
+				
+			}
+			else if (firstPlay){
+				player.pause();
+				player.seekToMillis(0);
+				Timer t = new Timer();
+				t.schedule(new ShowStartButton(), 9000);
+				firstPlay = false;
+			}
+			
 		}
 
 		@Override
@@ -185,7 +231,9 @@ public class MusicYouTubeControl implements YouTubePlayer.OnInitializedListener{
 
 		@Override
 		public void onStopped() {
-			System.out.println("onStopped");
+			if (nowRealyPlay){
+				mainActivity.finish();
+			}
 
 		}
 

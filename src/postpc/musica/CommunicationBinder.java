@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import android.app.Application;
 import android.content.BroadcastReceiver;
+import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 
@@ -19,8 +20,9 @@ public class CommunicationBinder extends Application {
 	public WifiP2pManager mManager;
 	public Channel mChannel;
 	public BroadcastReceiver mReceiver;
-	
+	public WifiP2pInfo info;
 	public Master_Get_Connection mServ;
+	public String owner;
 	
 	
 	public static class ReaderWriterPair {

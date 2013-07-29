@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,7 +37,16 @@ public class listAdapt extends ArrayAdapter<youTubeEntery> {
 		mainText.setText(title);
 		mainText.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) { 
-				_mServ.startedPlayMode();
+				_mServ.startedPlayMode(youTubeId);
+				Intent intent = new Intent(_activity, MasterPlayActivity.class);
+				intent.putExtra("youTubeId",youTubeId); 
+				_activity.startActivity(intent);
+			}
+		});
+		ImageView play = (ImageView)view.findViewById(R.id.play);
+		play.setOnClickListener(new OnClickListener() {
+			public void onClick(View arg0) { 
+				_mServ.startedPlayMode(youTubeId);
 				Intent intent = new Intent(_activity, MasterPlayActivity.class);
 				intent.putExtra("youTubeId",youTubeId); 
 				_activity.startActivity(intent);

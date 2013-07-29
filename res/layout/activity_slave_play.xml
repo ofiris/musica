@@ -7,11 +7,23 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".SlavePlayActivity" >
-    
-     <com.google.android.youtube.player.YouTubePlayerView
-      android:id="@+id/youtube_view"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"/>
+
+    <com.google.android.youtube.player.YouTubePlayerView
+        android:id="@+id/youtube_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/buttonSlave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="22dp"
+        android:enabled="false"
+        android:text="@string/stop"
+        android:textSize="35sp"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/slave_play"
@@ -20,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="105dp"
+        android:layout_marginBottom="44dp"
         android:clickable="false"
         android:text="@string/waitForStart"
         android:textSize="35sp" />

@@ -2,5 +2,7 @@
 <resources>
     <color name="LightPurpul">#e2bdf8</color>
     <color name="DarkPurpol">#390f51</color>
+    <color name="Yellow">#f9e700</color>
+    
     
 </resources>

@@ -10,11 +10,14 @@
 
     <EditText
         android:id="@+id/input"
-        android:layout_width="wrap_content"
+        android:layout_width="30dp"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:layout_marginRight="15dp"
+        android:layout_toLeftOf="@+id/searchButton"
         android:hint="@string/hint"
+        android:paddingRight="10dp"
         android:text="@string/empty" >
 
         <requestFocus
@@ -42,14 +45,5 @@
         android:background="#d7e2ea" >
 
     </ListView>
-
-    <Button
-        android:id="@+id/back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/input"
-        android:layout_alignBottom="@+id/input"
-        android:layout_toRightOf="@+id/input"
-        android:text="@string/back" />
 
 </RelativeLayout>

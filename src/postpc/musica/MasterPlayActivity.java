@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubePlayerView;
 
 import postpc.musica.CommunicationBinder.ReaderWriterPair;
@@ -16,11 +17,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.content.Intent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
 //TODO now use the youTubeOne. 
-public class MasterPlayActivity extends ParentActivity {
+public class MasterPlayActivity extends YouTubeBaseActivity {
 
 	
 	private String youTubeId;
@@ -29,13 +31,11 @@ public class MasterPlayActivity extends ParentActivity {
 	YouTubePlayerView youTubeView ;
 	MusicYouTubeControl yCtrl;
 	HashMap<Socket, ReaderWriterPair> connections;
-
 	Intent intent1;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_master_play);
-		
 		playButton = (Button) findViewById(R.id.button1);
 		youTubeId = getIntent().getExtras().getString("youTubeId");
 		youTubeView = (YouTubePlayerView) findViewById(R.id.youtube_view);
@@ -43,25 +43,23 @@ public class MasterPlayActivity extends ParentActivity {
 		
 		CommunicationBinder myCom = (CommunicationBinder) getApplication();
 		connections =myCom.connections;
+		
 		/*
 		 * Bind service call, starts the service if it didn't start yet
 		 */
 
 
 		communicationTask = new CommunicateWithSlaves(); 
-		communicationTask.execute();
+		
 
 		playButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				if(playing==false)
 				{
+					playButton.setEnabled(false);
+					communicationTask.execute();
 					yCtrl.inPlayMode();
-					timeToStart = System.currentTimeMillis() + 3000; //TODO changed, was 2000
-					for (ReaderWriterPair pair : connections.values()){
-						pair.writer.println(timeToStart);
-					}
-					t = new Timer();
-					t.schedule(new PlayTask(), timeToStart- System.currentTimeMillis());
+					
 					
 				}
 				else{
@@ -73,6 +71,11 @@ public class MasterPlayActivity extends ParentActivity {
 
 
 		});
+	}
+	
+	@Override
+	public void onBackPressed() {
+		finish();
 	}
 
 	CommunicateWithSlaves communicationTask;
@@ -116,7 +119,12 @@ public class MasterPlayActivity extends ParentActivity {
 		protected String doInBackground(Void... params) {
 
 			informSlaves();
-			
+			timeToStart = System.currentTimeMillis() + 3000; //TODO changed, was 2000
+			for (ReaderWriterPair pair : connections.values()){
+				pair.writer.println(timeToStart);
+			}
+			t = new Timer();
+			t.schedule(new PlayTask(), timeToStart- System.currentTimeMillis());
 
 			return null;
 		}
@@ -138,6 +146,15 @@ public class MasterPlayActivity extends ParentActivity {
 	    public void handleMessage(Message msg) {
 	    	yCtrl.resumeMusic();
 			playing=true; //this is the textview
+			playButton.setText("Stop");
+			playButton.setEnabled(true);
+			playButton.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					finish();
+				}
+			});
 	    }
 	};
 	
@@ -173,41 +190,4 @@ public class MasterPlayActivity extends ParentActivity {
 			}
 		}
 	}
-
-	class NotifyThread extends Thread {
-		int sleep;
-		public NotifyThread (int sleep){
-			this.sleep = sleep;
-		}
-		public void run() {
-			try {
-				sleep(sleep); // 5000 mil secs = 5 secs . sleeps thread
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} finally {
-				for (ReaderWriterPair pair : connections.values()){
-					pair.writer.println(System.currentTimeMillis());
-				}
-			}
-		}
-	}
-
-	class NotifyTimeToStartThread extends Thread {
-		int sleep;
-		public NotifyTimeToStartThread  (int sleep){
-			this.sleep = sleep;
-		}
-		public void run() {
-			try {
-				sleep(sleep); // 5000 mil secs = 5 secs . sleeps thread
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} finally {
-				for (ReaderWriterPair pair: connections.values()){
-					pair.writer.println(timeToStart);
-				}
-			}
-		}
-	}
-
 }

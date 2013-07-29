@@ -26,10 +26,12 @@
         </service>
         <service
             android:name="postpc.musica.Master_Get_Connection"
+            android:configChanges="keyboardHidden|orientation"
             android:enabled="true" >
         </service>
         <service
             android:name="postpc.musica.SoundPoolService"
+            android:configChanges="keyboardHidden|orientation"
             android:enabled="true" >
         </service>
 
@@ -77,10 +79,14 @@
         </activity>
         <activity
             android:name="postpc.musica.ConnectSpeakerActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="nosensor"
             android:label="@string/title_activity_connect_speaker" >
         </activity>
         <activity
             android:name="postpc.musica.ConnectBroadcasterActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="nosensor"
             android:label="@string/title_activity_broadcaster" >
         </activity>
     </application>

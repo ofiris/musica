@@ -18,6 +18,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.Typeface;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -71,6 +72,12 @@ public class ConnectBroadcasterActivity extends Activity {
 		myCom.mChannel = mChannel;
 		myCom.mManager = mManager;
 		myCom.mReceiver = mReceiver;
+		
+		TextView txt = (TextView) findViewById(R.id.num_of_connections_hint);  
+		Typeface font = Typeface.createFromAsset(getAssets(), "aescrawl.ttf");  
+		
+		txt.setTypeface(font);  
+		txt.setTextSize(30);
 		
 		Button b = (Button)findViewById(R.id.chooseSong);
 		b.setOnClickListener(new OnClickListener() {

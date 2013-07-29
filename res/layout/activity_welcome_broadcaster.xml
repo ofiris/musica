@@ -4,17 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/numOfConnections"
-        style="@style/text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="14dp"
-        android:text="@string/conNum"
-        android:textAppearance="@style/text_view"
-        android:textSize="28sp" />
-
     <Button
         android:id="@+id/chooseSong"
         android:layout_width="wrap_content"
@@ -24,5 +13,42 @@
         android:layout_marginBottom="158dp"
         android:text="@string/chooseSong"
         android:textSize="35sp" />
+
+    <TextView
+        android:id="@+id/numOfConnections"
+        style="@style/text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="@string/zeroConnections"
+        android:textAppearance="@style/text_view"
+        android:textSize="40sp"
+        android:width="40dp" />
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/numOfConnections"
+        android:layout_below="@+id/numOfConnections"
+        android:layout_marginTop="18dp"
+        android:src="@drawable/arrow1" />
+
+    <TextView
+        android:id="@+id/num_of_connections_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/imageView1"
+        android:layout_marginTop="27dp"
+        android:layout_toLeftOf="@+id/imageView1"
+        android:text="@string/num_of_speakers_connected"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:gravity="center"
+        android:textColor="@color/Yellow" />
 
 </RelativeLayout>

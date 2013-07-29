@@ -24,6 +24,7 @@ public class BroadcastReceiverSpeaker extends BroadcastReceiver {
 	private ConnectSpeakerActivity mActivity;
 	private DirectWifiPeersListener myPeerListListener;
 	private DirectWifiConnectionInfoListener myConnectionInfoListener;
+	private CommunicationBinder cbind;
 	private static boolean alreadyCreatedActivity;
 
 	int numberOfConnections;
@@ -36,6 +37,7 @@ public class BroadcastReceiverSpeaker extends BroadcastReceiver {
 		this.myPeerListListener = new DirectWifiPeersListener();
 		this.myConnectionInfoListener = new DirectWifiConnectionInfoListener();
 		this.numberOfConnections = 0;
+		this.cbind =  (CommunicationBinder) mActivity.getApplication();
 	}
 
 	@Override
@@ -153,13 +155,13 @@ public class BroadcastReceiverSpeaker extends BroadcastReceiver {
 
 			if (info.groupFormed && info.isGroupOwner){
 				Intent intent = new Intent(mActivity, SearchActivity.class);
-				intent.putExtra("info",info);
+				cbind.info = info;
 				mActivity.startActivity(intent);
 			}
 			else if (info.groupFormed){
 				Intent intent = new Intent(mActivity, WaitingActivity.class);
-				intent.putExtra("info",info);
-				intent.putExtra("owner", groupOwner);
+				cbind.info = info;
+				cbind.owner = groupOwner;
 				mActivity.startActivity(intent);
 			} else
 				try {

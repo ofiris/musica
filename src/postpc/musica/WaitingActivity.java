@@ -33,7 +33,7 @@ public class WaitingActivity extends ParentActivity {
 	private Socket socket;
 	private BufferedReader reader;
 	private PrintWriter writer;
-	
+	private CreateCommunicationClient communicate;
 	private WifiP2pInfo info;
 	
 	
@@ -41,14 +41,24 @@ public class WaitingActivity extends ParentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		info = getIntent().getParcelableExtra("info");
+
 		setContentView(R.layout.activity_waiting_for_song);
+		info = ((CommunicationBinder)getApplication()).info;
 		String [] host = {info.groupOwnerAddress.getHostAddress()};
-		new CreateCommunicationClient(this, layoutView).execute(host);
+		communicate = new CreateCommunicationClient(this, layoutView);
+		communicate.execute(host);
 		TextView txtView = (TextView) findViewById(R.id.wait_for_song);
-		String str = "Waiting for\n " + getIntent().getStringExtra("owner") + " to\nchoose\na\nsong";
+		String str = "Waiting for\n " + ((CommunicationBinder)getApplication()).owner + " to\nchoose\na\nsong";
 		txtView.setText(str);
 	}
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if (socket !=null){
+			readFromUserClient();
+		}
+	}
+	
 
 	private void readFromUserClient() {
 		ReadFromMaster in = new ReadFromMaster(this, layoutView);
@@ -58,7 +68,7 @@ public class WaitingActivity extends ParentActivity {
 	
 	private void goToPlayIntent(String receivedMsg) {
 		Intent intent = new Intent(this, SlavePlayActivity.class);
-		intent.putExtra("song","some song"); //TODO
+		intent.putExtra("youTubeId",receivedMsg); //TODO
 		this.startActivity(intent);
 	}
 
@@ -126,6 +136,7 @@ public class WaitingActivity extends ParentActivity {
 		@Override
 		protected void onPostExecute(String receivedMsg) {
 			//System.out.println(receivedMsg);
+			communicate = null;
 			goToPlayIntent(receivedMsg);
 		}
 

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubePlayerView;
 
 import postpc.musica.MasterPlayActivity.PlayTask;
@@ -28,16 +29,18 @@ import android.graphics.Shader;
 import android.graphics.Shader.TileMode;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class SlavePlayActivity extends ParentActivity{
+public class SlavePlayActivity extends YouTubeBaseActivity{
 	private String youTubeId;
 	private TextView playText;
 	private boolean playing  = false;
 	YouTubePlayerView youTubeView ;
 	MusicYouTubeControl yCtrl;
 	BufferedReader br;
+	Button stop;
 	PrintWriter pw;
 	Timer timer = new Timer();
 	@Override
@@ -47,14 +50,14 @@ public class SlavePlayActivity extends ParentActivity{
 		
 		playText = (TextView) findViewById(R.id.slave_play); //TODO For debug
 		//setTextView();
-		//youTubeId = getIntent().getExtras().getString("youTubeId");//TODO add from send
-		youTubeId = Consts.quckPlayVideo;
+		youTubeId = getIntent().getExtras().getString("youTubeId");//TODO add from send
+		//youTubeId = Consts.quckPlayVideo;
 		youTubeView = (YouTubePlayerView) findViewById(R.id.youtube_view);
 		yCtrl = new MusicYouTubeControl(this, playText,null, youTubeId, youTubeView);
 
 		br = ((CommunicationBinder)getApplication()).reader;
 		pw = ((CommunicationBinder)getApplication()).writer;
-
+		stop = (Button)findViewById(R.id.buttonSlave);
 		ReadFromMaster r = new ReadFromMaster(this, null);
 		r.execute();
 
@@ -72,7 +75,10 @@ public class SlavePlayActivity extends ParentActivity{
 		
 	}
 
-
+	@Override
+	public void onBackPressed() {
+		finish();
+	}
 
 	public class ReadFromMaster extends AsyncTask<Void, Void, String> {
 
@@ -125,7 +131,7 @@ public class SlavePlayActivity extends ParentActivity{
 		@Override
 		protected void onPostExecute(String receivedMsg) {
 
-			timer.schedule(new PlayTask(), masterTime - System.currentTimeMillis() - bestClockDifference - 0);
+			timer.schedule(new PlayTask(), masterTime - System.currentTimeMillis() - bestClockDifference);
 			System.out.println("clock " + bestClockDifference);
 			System.out.println("delay used "+ messageDelayTime);
 			System.out.println("real delay "+ bestMessageDelayTime);
@@ -141,6 +147,17 @@ public class SlavePlayActivity extends ParentActivity{
 		public Handler mHandler = new Handler() {
 		    public void handleMessage(Message msg) {
 		    	yCtrl.resumeMusic();
+		    	playText.setVisibility(View.GONE);
+		    	stop.setVisibility(View.VISIBLE);
+		    	stop.setEnabled(true);
+		    	stop.setOnClickListener( new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						finish();
+						
+					}
+				});
 				playing=true; //this is the textview
 		    }
 		};

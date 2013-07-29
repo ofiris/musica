@@ -4,25 +4,52 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/broadcaster"
+    <ImageView
+        android:id="@+id/imageView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="90dp"
-        android:text="@string/Broadcaster"
-        android:textSize="35sp" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/musica_logo" />
+
+    
 
     <Button
         android:id="@+id/speaker"
         style="@style/speaker_mode_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/broadcaster"
         android:layout_alignLeft="@+id/broadcaster"
         android:layout_alignRight="@+id/broadcaster"
-        android:layout_centerVertical="true"
+        android:layout_marginBottom="62dp"
         android:text="@string/Speaker"
         android:textSize="35sp" />
+
+    <Button
+        android:id="@+id/broadcaster"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/choose_mode_hint1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="40dp"
+        android:text="@string/Broadcaster"
+        android:textSize="35sp" />
+    
+    <TextView
+        android:id="@+id/choose_mode_hint1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="18dp"
+        android:layout_marginLeft="22dp"
+        android:text="@string/choose_mode_hint"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/Yellow"
+        android:textColorLink="@color/Yellow"
+        android:gravity="center"
+        android:textSize="18sp" />
 
 </RelativeLayout>

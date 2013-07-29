@@ -10,7 +10,6 @@ import java.net.SocketException;
 import java.util.HashMap;
 
 import postpc.musica.CommunicationBinder.ReaderWriterPair;
-import postpc.musica.MusicService.ServiceBinder;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -66,6 +65,7 @@ public class Master_Get_Connection extends Service {
 		CommunicationBinder myCom = (CommunicationBinder) getApplication();
 		myCom.connections = new HashMap<Socket, ReaderWriterPair>();
 		connections = myCom.connections;
+		
 		(new CreateCommunicationGroupOwner(null,null)).execute();
 	}
 
@@ -152,18 +152,18 @@ public class Master_Get_Connection extends Service {
 			//if (socket != null)
 			//Toast.makeText(getApplicationContext(), "connect", Toast.LENGTH_SHORT).show();
 			if (!inPlayMode){
-				connectionsTextView.setText("Number of speakers connected: " + connections.size());
+				connectionsTextView.setText(""+connections.size());
 				continueListening();
 			}
 			
 		}
 	}
 	
-	public void startedPlayMode(){
+	public void startedPlayMode(String youtubeId){
 		inPlayMode = true;
 		for (ReaderWriterPair pair: connections.values()){
 			//TODO
-			pair.writer.println("go to next intent");
+			pair.writer.println(youtubeId);
 			pair.writer.flush();
 		}
 		

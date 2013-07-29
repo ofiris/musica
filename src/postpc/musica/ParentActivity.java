@@ -9,6 +9,10 @@ import postpc.musica.CommunicationBinder.ReaderWriterPair;
 import android.os.Bundle;
 
 public abstract class ParentActivity extends YouTubeBaseActivity {
+	@Override
+	public void onBackPressed() {
+	
+	}
 	CommunicationBinder myCom;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -27,9 +31,9 @@ public abstract class ParentActivity extends YouTubeBaseActivity {
 		
 		closeWifiDirect();
 	}
+
+	
 	private void closeWifiDirect() {
-		if (myCom.mReceiver != null)
-			unregisterReceiver(myCom.mReceiver);
 		if (myCom.mManager == null || myCom.mChannel == null)
 			return;
 		myCom.mManager.stopPeerDiscovery(myCom.mChannel, null);

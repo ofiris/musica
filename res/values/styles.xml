@@ -19,7 +19,7 @@
 
     <style name="ApplicationStyle" parent="android:Theme.NoTitleBar">
         <item name="android:buttonStyle">@style/button</item>
-        <item name="android:windowBackground">@drawable/music_notes4</item>
+        <item name="android:windowBackground">@drawable/music_notes5</item>
     </style>
 
     <style name="button" parent="@android:style/Widget.Button">
@@ -32,6 +32,7 @@
         <item name="android:textSize">16dip</item>
         <item name="android:textStyle">bold</item>
         <item name="android:background">@drawable/button</item>
+        
         <item name="android:focusable">true</item>
         <item name="android:clickable">true</item>
     </style>
@@ -66,5 +67,25 @@
         <item name="android:textSize">35sp</item>
         <item name="android:gravity">center</item>
     </style>
-
+    
+    <style name="master_play_text_view" parent="@android:style/TextAppearance.Medium">
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:textColor">#f00</item>
+        <item name="android:shadowColor">#fff</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">50</item>
+        <item name="android:textSize">35sp</item>
+        <item name="android:gravity">center</item>
+    </style>
+	
+    <style name="handwriting_text_view" parent="@android:style/TextAppearance.Large">
+        <item name="android:textColor">#151617</item>
+        <item name="android:textStyle">bold</item>
+         <item name="android:fontFamily"></item>
+    </style>
+    
+    
+    
 </resources>

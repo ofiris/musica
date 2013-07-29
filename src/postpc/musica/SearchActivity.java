@@ -25,6 +25,7 @@ import android.content.ServiceConnection;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -93,24 +94,16 @@ public class SearchActivity extends ParentActivity {
 				querry = "http://gdata.youtube.com/feeds/api/videos?q="+inForUrl;
 				String fullQuerry=querry + "&alt=json&start-index="+curListPlace+
 						"&max-results="+(curListPlace + numOfRes);
+
+				InputMethodManager inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE); 
+
+				inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
 				new getSearchList(listAdapter).execute(fullQuerry);
+
 			}
 		});
 
-
-
-		Button backButton = (Button) findViewById(R.id.back);
 		final Context mActivity = this;
-		backButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				mServ.startedPlayMode();
-				Intent intent = new Intent(mActivity, MasterPlayActivity.class);
-				intent.putExtra("youTubeId",Consts.quckPlayVideo); //TODO in upper send to other
-				mActivity.startActivity(intent);
-
-			}
-		});
 		//Intent intent = new Intent(this,Master_Get_Connection.class);
 		//bindService(intent,_scon,Context.BIND_AUTO_CREATE);
 
