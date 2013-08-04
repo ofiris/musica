@@ -114,9 +114,10 @@ public class BroadcastReceiverSpeaker extends BroadcastReceiver {
 			
 			System.out.println("Found peers");
 			//Toast.makeText(mActivity, "found peers", Toast.LENGTH_LONG).show();
-			
+			if (foundOwner)return;
 			for (WifiP2pDevice peer : peers.getDeviceList()){
 				if (peer.isGroupOwner()){
+					foundOwner = true;
 					System.out.println("group owner is "+peer.deviceName);
 					groupOwner = peer.deviceName;
 					WifiP2pConfig config = new WifiP2pConfig();
